@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+{{ theme_block.title }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="containet">
+    <h1>
+        {{ theme_block.title }}
+    </h1>
+    <p>
+        {{ theme_block.description }}
+    </p>
+    <div class="row">
+        <div class="col-md-6">
+            <div style="max-height: 400px; overflow-y: auto">
+                <table class="table table-success table-stripped">
+                    <thead>
+                    <tr>
+                        <th>
+                            Английское слово
+                        </th>
+                        <th>
+                            Русский перевод
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for word in words %}
+                    <tr>
+                        <td>
+                            {{ word.eng_word }}
+                        </td>
+                        <td>
+                            {{ word.rus_word }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column justify-content-start">
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addWordModal">
+                Добавить слово
+            </button>
+            <button class="btn btn-secondary">
+                Учить слово
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--Modal-->
+<div class="modal fade" id="addWordModal" tabindex="-1" aria-labelledby="addWordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addWordModalLabel">
+                    Добавить новое слово
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'add_word' theme_block.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="eng-word" class="form-label">
+                            Английское слово
+                        </label>
+                        <input type="text" class="form-control" name="eng_word" id="eng-word" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rus-word" class="form-label">
+                            Русский перевод
+                        </label>
+                        <input type="text" class="form-control" name="rus_word" id="rus-word" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        Добавить
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

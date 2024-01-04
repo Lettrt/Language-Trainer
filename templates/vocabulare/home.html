@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+Language trainer
+{% endblock title%}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for block in theme_blocks %}
+        <div class="col-md-4">
+            <div class="card">
+                <a href="{% url 'theme_detail' pk=block.pk %}">
+                    <img src="{{ block.image.url }}" class="card-img-top" alt="{{ block.title }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ block.title }}
+                    </h5>
+                    <p class="card-text">
+                        Описание: {{ block.description }}
+                    </p>
+                    <p class="card-text">
+                        Количество слов для изучения: {{ block.words_count }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
