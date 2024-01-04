@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+Изучение слов
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1>Изучение слов</h1>
+    <div id="progress-info">
+        Пройдено <span id="words-progress">0</span> из <span id="total-words">{{ total_words_count }}</span>
+    </div>
+    <div id="word-display"></div>
+    <input type="text" id="user-answer" placeholder="Введите перевод">
+    <button onclick="checkAnswer()">Проверить</button>
+    <div id="feedback" style="display: none;"></div>
+    <div id="study-complete" style="display: none;"></div>
+</div>
+
+
+<script>
+let words = JSON.parse('{{ words_json|safe }}');
+let currentWordIndex = 0;
+let correctAnswersCount = 0;
+let mode = "{{ mode }}";
+let totalWordsCount = {{ total_words_count }};
+
+function showNextWord() {
+    if (currentWordIndex < words.length) {
+        let word = words[currentWordIndex];
+        let displayWord = mode === 'eng_to_rus' ? word.eng_word : word.rus_word;
+        document.getElementById('word-display').innerText = displayWord;
+        document.getElementById('user-answer').value = '';
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('words-progress').innerText = currentWordIndex + 1;
+    } else {
+        document.getElementById('word-study-area').style.display = 'none';
+        let studyCompleteDiv = document.getElementById('study-complete');
+        studyCompleteDiv.style.display = 'block';
+        studyCompleteDiv.innerHTML = `Вы правильно ответили на ${correctAnswersCount} из ${totalWordsCount} слов. Все слова изучены, поздравляю!`;
+    }
+}
+
+function checkAnswer() {
+    let userAnswerInput = document.getElementById('user-answer');
+    let userAnswer = userAnswerInput.value.trim();
+    let correctAnswer = mode === 'eng_to_rus' ? words[currentWordIndex].rus_word : words[currentWordIndex].eng_word;
+    let feedbackDiv = document.getElementById('feedback');
+
+    if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+        correctAnswersCount++;
+        feedbackDiv.innerText = 'Правильно!';
+        feedbackDiv.style.color = 'green';
+    } else {
+        feedbackDiv.innerText = 'Неправильно. Правильный ответ: ' + correctAnswer;
+        feedbackDiv.style.color = 'red';
+    }
+
+    feedbackDiv.style.display = 'block';
+    currentWordIndex++;
+    userAnswerInput.disabled = true; // Делаем поле ввода неактивным
+
+    setTimeout(() => {
+        if (currentWordIndex < words.length) {
+            showNextWord();
+            userAnswerInput.disabled = false; // Возвращаем поле ввода в активное состояние
+        } else {
+            document.getElementById('study-complete').style.display = 'block';
+            document.getElementById('study-complete').innerHTML = `Вы правильно ответили на ${correctAnswersCount} из ${totalWordsCount} слов. Все слова изучены, поздравляю!`;
+        }
+    }, 2000);
+}
+
+showNextWord();
+</script>
+
+{% endblock content %}

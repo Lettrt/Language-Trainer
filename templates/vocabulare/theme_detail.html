@@ -46,8 +46,11 @@
             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addWordModal">
                 Добавить слово
             </button>
-            <button class="btn btn-secondary">
-                Учить слово
+            <button class="btn btn-secondary" onclick="studyWords('eng_to_rus')">
+                Изучить слова (EN -> RU)
+            </button>
+            <button class="btn btn-secondary" onclick="studyWords('rus_to_eng')">
+                Изучить слова (RU -> EN)
             </button>
         </div>
     </div>
@@ -86,5 +89,13 @@
         </div>
     </div>
 </div>
+
+<script>
+function studyWords(mode) {
+    // Предполагаем, что 'pk' - это первичный ключ тематического блока
+    let pk = {{ theme_block.pk }};
+    window.location.href = `/themes/${pk}/study/${mode}/`;
+}
+</script>
 
 {% endblock content %}
